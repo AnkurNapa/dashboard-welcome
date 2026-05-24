@@ -8,9 +8,9 @@
 
 <!-- ============================================================= -->
 <!--  Screen 1 = welcome splash. "Enter" -> Screen 2 = wine         -->
-<!--  fermentation dashboard (light theme): SVG fermenter tanks     -->
-<!--  with bubbles, KPI cards, fermentation facts, about-me footer. -->
-<!--  Edit text/links at the ===== EDIT ===== marks.                -->
+<!--  fermentation dashboard (light): top nav of dashboards,        -->
+<!--  KPI cards, SVG fermenter tanks (bubbles + per-tank stats),    -->
+<!--  fermentation facts, about-me footer. Edit at ===== EDIT =====. -->
 <!-- ============================================================= -->
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -99,15 +99,26 @@
   #dashboard{ background:
       radial-gradient(90% 60% at 50% -8%, rgba(156,47,61,.10), transparent 60%),
       linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%); color:var(--ink); }
-  .panel{ position:relative; z-index:2; width:min(1040px,100%); margin:auto 0; }
-  .topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:clamp(16px,2.6vw,26px); }
-  .back{ display:inline-flex; align-items:center; gap:.55em; cursor:pointer; font-family:var(--sans);
-    font-weight:600; font-size:clamp(10px,1.4vw,12px); letter-spacing:.18em; text-transform:uppercase;
-    color:var(--wine); text-decoration:none; padding:9px 16px; border:1px solid var(--line);
+  .panel{ position:relative; z-index:2; width:min(1060px,100%); margin:auto 0; }
+
+  /* top dashboard nav */
+  .dash-nav{ display:flex; align-items:center; gap:12px 18px; flex-wrap:wrap;
+    justify-content:space-between; padding-bottom:14px; margin-bottom:clamp(18px,3vw,30px);
+    border-bottom:1px solid var(--line); }
+  .back{ display:inline-flex; align-items:center; gap:.5em; cursor:pointer; font-family:var(--sans);
+    font-weight:600; font-size:clamp(10px,1.3vw,12px); letter-spacing:.16em; text-transform:uppercase;
+    color:var(--wine); text-decoration:none; padding:8px 14px; border:1px solid var(--line);
     background:rgba(255,255,255,.5); transition:background .3s,transform .25s,border-color .3s; }
   .back:hover{ background:#fff; border-color:var(--brass); transform:translateX(-3px); }
+  .tabs{ display:flex; gap:4px; flex-wrap:wrap; justify-content:center; flex:1; }
+  .tab{ font-family:var(--sans); font-weight:600; font-size:clamp(10px,1.3vw,12px);
+    letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); text-decoration:none;
+    padding:9px 15px; border:1px solid transparent; transition:.25s; white-space:nowrap; }
+  .tab:hover{ color:var(--wine); background:rgba(176,141,87,.12); }
+  .tab.active{ color:var(--wine); border-color:var(--line); background:#fffdf8;
+    box-shadow:0 8px 18px -14px rgba(74,20,29,.5); }
   .live{ font-family:var(--sans); font-weight:600; font-size:clamp(9.5px,1.3vw,11px);
-    letter-spacing:.28em; text-transform:uppercase; color:var(--wine); display:inline-flex; align-items:center; gap:.6em; }
+    letter-spacing:.26em; text-transform:uppercase; color:var(--wine); display:inline-flex; align-items:center; gap:.6em; }
   .live .dot{ width:8px; height:8px; border-radius:50%; background:var(--wine-bright); animation:pulse 2.2s ease-out infinite; }
   @keyframes pulse{ 0%{ box-shadow:0 0 0 0 rgba(156,47,61,.45);} 70%{ box-shadow:0 0 0 11px rgba(156,47,61,0);} 100%{ box-shadow:0 0 0 0 rgba(156,47,61,0);} }
 
@@ -134,16 +145,28 @@
   .kpi .val{ font-weight:300; font-size:clamp(24px,3.3vw,38px); color:var(--wine); margin-top:.16em; line-height:1; }
   .kpi .val small{ font-size:.4em; font-family:var(--sans); letter-spacing:.04em; color:var(--ink-soft); }
 
-  /* fermenter tanks (SVG) */
-  .tanks{ display:grid; grid-template-columns:repeat(4,1fr); gap:clamp(12px,2vw,24px); align-items:end; }
+  /* fermenter tanks (SVG + stats) */
+  .tanks{ display:grid; grid-template-columns:repeat(4,1fr); gap:clamp(12px,2vw,24px); align-items:start; }
   @media (max-width:620px){ .tanks{ grid-template-columns:repeat(2,1fr); } }
-  .tank{ text-align:center; }
-  .tank svg{ display:block; margin:0 auto; width:auto; height:clamp(158px,24vh,222px); max-width:100%;
-    filter:drop-shadow(0 14px 18px rgba(74,20,29,.22)); }
-  .tank .name{ font-family:var(--sans); font-weight:600; font-size:clamp(10px,1.3vw,12px);
-    letter-spacing:.14em; text-transform:uppercase; color:var(--ink); margin-top:10px; }
-  .tank .read{ font-family:var(--sans); font-weight:500; font-size:clamp(10px,1.25vw,11.5px);
-    color:var(--brass-ink); margin-top:3px; letter-spacing:.04em; }
+  .tank{ background:#fffdf8; border:1px solid var(--line); box-shadow:0 14px 30px -26px rgba(74,20,29,.55);
+    padding:clamp(12px,1.6vw,18px) clamp(10px,1.4vw,14px) clamp(13px,1.8vw,16px); text-align:center; }
+  .tank .viz{ height:clamp(150px,22vh,210px); display:flex; align-items:flex-end; justify-content:center; }
+  .tank .viz svg{ display:block; width:auto; height:100%; max-width:100%;
+    filter:drop-shadow(0 10px 14px rgba(74,20,29,.22)); }
+  .tank .name{ font-family:var(--sans); font-weight:600; font-size:clamp(10.5px,1.35vw,12.5px);
+    letter-spacing:.1em; text-transform:uppercase; color:var(--ink); margin-top:11px; }
+  .bar{ height:6px; border-radius:4px; background:rgba(176,141,87,.22); overflow:hidden;
+    margin:9px auto 0; max-width:160px; }
+  .bar > span{ display:block; height:100%; border-radius:4px;
+    background:linear-gradient(90deg, var(--wine-bright), var(--wine)); }
+  .bar-lab{ font-family:var(--sans); font-weight:600; font-size:clamp(8.5px,1.05vw,9.5px);
+    letter-spacing:.14em; text-transform:uppercase; color:var(--brass-ink); margin-top:6px; }
+  .stats{ list-style:none; display:grid; grid-template-columns:1fr 1fr; gap:0 14px;
+    margin:11px auto 0; max-width:168px; }
+  .stats li{ display:flex; justify-content:space-between; align-items:baseline;
+    font-family:var(--sans); font-size:clamp(10px,1.2vw,11.5px); color:var(--ink-soft);
+    padding:4px 0; border-bottom:1px dotted var(--line); }
+  .stats li b{ color:var(--ink); font-weight:600; }
 
   /* fermentation facts */
   .facts{ display:grid; grid-template-columns:repeat(2,1fr); gap:clamp(10px,1.6vw,16px); }
@@ -218,10 +241,20 @@
   <!-- ============ SCREEN 2 — FERMENTATION DASHBOARD ============ -->
   <section class="screen" id="dashboard" aria-hidden="true">
     <div class="panel">
-      <div class="topbar">
+
+      <!-- ===== TOP DASHBOARD NAV (point hrefs at your Tableau dashboards) ===== -->
+      <nav class="dash-nav">
         <a class="back" id="backBtn" href="#" role="button">← Back</a>
+        <div class="tabs">
+          <a class="tab active" href="#dashboard">Fermentation</a>
+          <a class="tab" href="#dashboard">Overview</a>
+          <a class="tab" href="#dashboard">Production</a>
+          <a class="tab" href="#dashboard">Sales &amp; DTC</a>
+          <a class="tab" href="#dashboard">Compliance</a>
+        </div>
         <span class="live"><span class="dot"></span>Fermenting</span>
-      </div>
+      </nav>
+
       <div class="head">
         <!-- ===== EDIT HEADLINE ===== -->
         <p class="dash-kicker">The Cellar Floor</p>
@@ -239,12 +272,48 @@
       </div>
 
       <div class="sec-label">Fermenters</div>
-      <!-- data-fill = how far along (0–1). Bubbles + tank drawn by script. -->
+      <!-- data-fill = wine level in the vessel (0–1); bar width = % to dry. Edit freely. -->
       <div class="tanks" id="tanks">
-        <figure class="tank" data-name="Tank A · Cab"    data-read="19.2 °Bx · 27 °C" data-fill="0.80"></figure>
-        <figure class="tank" data-name="Tank B · Merlot" data-read="11.4 °Bx · 26 °C" data-fill="0.62"></figure>
-        <figure class="tank" data-name="Tank C · Syrah"  data-read="6.8 °Bx · 25 °C"  data-fill="0.45"></figure>
-        <figure class="tank" data-name="Tank D · Pinot"  data-read="2.1 °Bx · 18 °C"  data-fill="0.28"></figure>
+        <figure class="tank" data-fill="0.88">
+          <div class="viz"></div>
+          <div class="name">Tank A · Cabernet</div>
+          <div class="bar"><span style="width:20%"></span></div>
+          <div class="bar-lab">20% to dry · Day 5</div>
+          <ul class="stats">
+            <li><span>Brix</span><b>19.2°</b></li><li><span>Temp</span><b>27°C</b></li>
+            <li><span>pH</span><b>3.5</b></li><li><span>Vol</span><b>4,800 L</b></li>
+          </ul>
+        </figure>
+        <figure class="tank" data-fill="0.86">
+          <div class="viz"></div>
+          <div class="name">Tank B · Merlot</div>
+          <div class="bar"><span style="width:53%"></span></div>
+          <div class="bar-lab">53% to dry · Day 7</div>
+          <ul class="stats">
+            <li><span>Brix</span><b>11.4°</b></li><li><span>Temp</span><b>26°C</b></li>
+            <li><span>pH</span><b>3.6</b></li><li><span>Vol</span><b>5,200 L</b></li>
+          </ul>
+        </figure>
+        <figure class="tank" data-fill="0.85">
+          <div class="viz"></div>
+          <div class="name">Tank C · Syrah</div>
+          <div class="bar"><span style="width:72%"></span></div>
+          <div class="bar-lab">72% to dry · Day 9</div>
+          <ul class="stats">
+            <li><span>Brix</span><b>6.8°</b></li><li><span>Temp</span><b>25°C</b></li>
+            <li><span>pH</span><b>3.7</b></li><li><span>Vol</span><b>3,600 L</b></li>
+          </ul>
+        </figure>
+        <figure class="tank" data-fill="0.90">
+          <div class="viz"></div>
+          <div class="name">Tank D · Pinot Noir</div>
+          <div class="bar"><span style="width:91%"></span></div>
+          <div class="bar-lab">91% to dry · Day 11</div>
+          <ul class="stats">
+            <li><span>Brix</span><b>2.1°</b></li><li><span>Temp</span><b>18°C</b></li>
+            <li><span>pH</span><b>3.6</b></li><li><span>Vol</span><b>2,900 L</b></li>
+          </ul>
+        </figure>
       </div>
 
       <div class="sec-label">About the ferment</div>
@@ -287,8 +356,7 @@
     if (history.length>1 && location.hash==='#dashboard') history.back(); else location.hash=''; });
   window.addEventListener('hashchange', sync);
 
-  // ---- SVG fermentation tanks (stainless vessel + wine + rising bubbles) ----
-  // SVG markup below is fully author-defined (no user input); injected via DOMParser, labels via textContent.
+  // ---- SVG fermentation tanks (author-defined markup; injected via DOMParser) ----
   (function(){
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const rnd=(a,b)=>a+Math.random()*(b-a);
@@ -346,12 +414,10 @@
 
     document.querySelectorAll('#tanks .tank').forEach((fig,i)=>{
       const fill=Math.min(.92, Math.max(.1, parseFloat(fig.dataset.fill||'.6')));
+      const viz=fig.querySelector('.viz');
       const doc=new DOMParser().parseFromString(tankSVG(i,fill),'image/svg+xml');
       const svg=doc.documentElement;
-      if(svg && svg.localName==='svg'){ fig.appendChild(document.importNode(svg,true)); }
-      const name=document.createElement('div'); name.className='name'; name.textContent=fig.dataset.name||'';
-      const read=document.createElement('div'); read.className='read'; read.textContent=fig.dataset.read||'';
-      fig.appendChild(name); fig.appendChild(read);
+      if(viz && svg && svg.localName==='svg'){ viz.appendChild(document.importNode(svg,true)); }
     });
   })();
 
