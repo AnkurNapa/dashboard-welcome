@@ -7,10 +7,10 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%236b1f2a'/%3E%3Ctext x='8' y='12' font-family='Georgia' font-size='11' fill='%23f5efe2' text-anchor='middle'%3EE%3C/text%3E%3C/svg%3E" />
 
 <!-- ============================================================= -->
-<!--  Screen 1 = welcome splash. "Enter" -> Screen 2 = wine         -->
-<!--  fermentation dashboard (light): top nav of dashboards,        -->
-<!--  KPI cards, SVG fermenter tanks (bubbles + per-tank stats),    -->
-<!--  fermentation facts, about-me footer. Edit at ===== EDIT =====. -->
+<!--  Welcome splash -> multi-view fermentation/estate dashboard.   -->
+<!--  Each top tab (Fermentation, Overview, Production, Sales,      -->
+<!--  Compliance) renders its own seeded data + visual. Edit the    -->
+<!--  DATA block in the script.                                     -->
 <!-- ============================================================= -->
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -95,13 +95,12 @@
     font-size:clamp(9.5px,1.3vw,11px); letter-spacing:.34em; text-transform:uppercase;
     color:var(--brass); opacity:.9; animation:rise .9s .96s both; }
 
-  /* ============ SCREEN 2 — FERMENTATION DASHBOARD (LIGHT) ============ */
+  /* ============ SCREEN 2 — DASHBOARD (LIGHT, MULTI-VIEW) ============ */
   #dashboard{ background:
       radial-gradient(90% 60% at 50% -8%, rgba(156,47,61,.10), transparent 60%),
       linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%); color:var(--ink); }
   .panel{ position:relative; z-index:2; width:min(1060px,100%); margin:auto 0; }
 
-  /* top dashboard nav */
   .dash-nav{ display:flex; align-items:center; gap:12px 18px; flex-wrap:wrap;
     justify-content:space-between; padding-bottom:14px; margin-bottom:clamp(18px,3vw,30px);
     border-bottom:1px solid var(--line); }
@@ -113,7 +112,7 @@
   .tabs{ display:flex; gap:4px; flex-wrap:wrap; justify-content:center; flex:1; }
   .tab{ font-family:var(--sans); font-weight:600; font-size:clamp(10px,1.3vw,12px);
     letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); text-decoration:none;
-    padding:9px 15px; border:1px solid transparent; transition:.25s; white-space:nowrap; }
+    padding:9px 15px; border:1px solid transparent; cursor:pointer; transition:.25s; white-space:nowrap; }
   .tab:hover{ color:var(--wine); background:rgba(176,141,87,.12); }
   .tab.active{ color:var(--wine); border-color:var(--line); background:#fffdf8;
     box-shadow:0 8px 18px -14px rgba(74,20,29,.5); }
@@ -122,20 +121,21 @@
   .live .dot{ width:8px; height:8px; border-radius:50%; background:var(--wine-bright); animation:pulse 2.2s ease-out infinite; }
   @keyframes pulse{ 0%{ box-shadow:0 0 0 0 rgba(156,47,61,.45);} 70%{ box-shadow:0 0 0 11px rgba(156,47,61,0);} 100%{ box-shadow:0 0 0 0 rgba(156,47,61,0);} }
 
+  #view{ animation:fade .5s ease both; }
+  @keyframes fade{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:none;} }
   .head{ text-align:center; margin-bottom:clamp(20px,3.2vw,32px); }
   .dash-kicker{ font-family:var(--sans); font-weight:600; font-size:clamp(10px,1.5vw,12px);
     letter-spacing:.4em; text-transform:uppercase; color:var(--brass-ink); margin-bottom:.7em; }
   #dashboard h2{ font-weight:300; font-style:italic; color:var(--wine);
     font-size:clamp(30px,5.4vw,52px); line-height:1.04; letter-spacing:-.01em; }
   .dash-sub{ font-family:var(--sans); font-weight:400; font-size:clamp(12px,1.7vw,15px);
-    color:var(--ink-soft); margin:clamp(10px,1.8vw,16px) auto 0; max-width:52ch; }
+    color:var(--ink-soft); margin:clamp(10px,1.8vw,16px) auto 0; max-width:56ch; }
 
   .sec-label{ display:flex; align-items:center; gap:12px; font-family:var(--sans); font-weight:600;
     font-size:clamp(10px,1.3vw,11.5px); letter-spacing:.28em; text-transform:uppercase;
     color:var(--brass-ink); margin:clamp(24px,3.4vw,38px) 0 clamp(12px,1.8vw,16px); }
   .sec-label::after{ content:""; flex:1; height:1px; background:linear-gradient(90deg,var(--line),transparent); }
 
-  /* KPI cards */
   .kpis{ display:grid; grid-template-columns:repeat(4,1fr); gap:clamp(10px,1.5vw,16px); }
   @media (max-width:620px){ .kpis{ grid-template-columns:repeat(2,1fr); } }
   .kpi{ background:#fffdf8; border:1px solid var(--line); box-shadow:0 14px 30px -26px rgba(74,20,29,.55);
@@ -145,30 +145,44 @@
   .kpi .val{ font-weight:300; font-size:clamp(24px,3.3vw,38px); color:var(--wine); margin-top:.16em; line-height:1; }
   .kpi .val small{ font-size:.4em; font-family:var(--sans); letter-spacing:.04em; color:var(--ink-soft); }
 
-  /* fermenter tanks (SVG + stats) */
   .tanks{ display:grid; grid-template-columns:repeat(4,1fr); gap:clamp(12px,2vw,24px); align-items:start; }
   @media (max-width:620px){ .tanks{ grid-template-columns:repeat(2,1fr); } }
   .tank{ background:#fffdf8; border:1px solid var(--line); box-shadow:0 14px 30px -26px rgba(74,20,29,.55);
     padding:clamp(12px,1.6vw,18px) clamp(10px,1.4vw,14px) clamp(13px,1.8vw,16px); text-align:center; }
   .tank .viz{ height:clamp(150px,22vh,210px); display:flex; align-items:flex-end; justify-content:center; }
-  .tank .viz svg{ display:block; width:auto; height:100%; max-width:100%;
-    filter:drop-shadow(0 10px 14px rgba(74,20,29,.22)); }
+  .tank .viz svg{ display:block; width:auto; height:100%; max-width:100%; filter:drop-shadow(0 10px 14px rgba(74,20,29,.22)); }
   .tank .name{ font-family:var(--sans); font-weight:600; font-size:clamp(10.5px,1.35vw,12.5px);
     letter-spacing:.1em; text-transform:uppercase; color:var(--ink); margin-top:11px; }
-  .bar{ height:6px; border-radius:4px; background:rgba(176,141,87,.22); overflow:hidden;
-    margin:9px auto 0; max-width:160px; }
-  .bar > span{ display:block; height:100%; border-radius:4px;
-    background:linear-gradient(90deg, var(--wine-bright), var(--wine)); }
+  .bar{ height:6px; border-radius:4px; background:rgba(176,141,87,.22); overflow:hidden; margin:9px auto 0; max-width:160px; }
+  .bar > span{ display:block; height:100%; border-radius:4px; background:linear-gradient(90deg, var(--wine-bright), var(--wine)); }
   .bar-lab{ font-family:var(--sans); font-weight:600; font-size:clamp(8.5px,1.05vw,9.5px);
     letter-spacing:.14em; text-transform:uppercase; color:var(--brass-ink); margin-top:6px; }
-  .stats{ list-style:none; display:grid; grid-template-columns:1fr 1fr; gap:0 14px;
-    margin:11px auto 0; max-width:168px; }
+  .stats{ list-style:none; display:grid; grid-template-columns:1fr 1fr; gap:0 14px; margin:11px auto 0; max-width:168px; }
   .stats li{ display:flex; justify-content:space-between; align-items:baseline;
     font-family:var(--sans); font-size:clamp(10px,1.2vw,11.5px); color:var(--ink-soft);
     padding:4px 0; border-bottom:1px dotted var(--line); }
   .stats li b{ color:var(--ink); font-weight:600; }
 
-  /* fermentation facts */
+  .chart-card{ background:#fffdf8; border:1px solid var(--line); box-shadow:0 14px 30px -26px rgba(74,20,29,.55);
+    padding:clamp(16px,2.2vw,26px); }
+  .chart-card svg{ display:block; width:100%; height:auto; }
+  .legend{ display:flex; flex-wrap:wrap; gap:8px 20px; justify-content:center; margin-top:14px; }
+  .legend .it{ display:inline-flex; align-items:center; gap:8px; font-family:var(--sans);
+    font-weight:500; font-size:clamp(10px,1.2vw,12px); color:var(--ink-soft); letter-spacing:.04em; }
+  .legend .sw{ width:16px; height:3px; border-radius:2px; }
+
+  .dtable{ width:100%; border-collapse:collapse; }
+  .dtable th{ text-align:left; font-family:var(--sans); font-weight:600; font-size:clamp(9px,1.1vw,10px);
+    letter-spacing:.18em; text-transform:uppercase; color:var(--brass-ink); padding:10px 12px; border-bottom:1px solid var(--line); }
+  .dtable td{ font-family:var(--sans); font-size:clamp(11px,1.35vw,13px); color:var(--ink);
+    padding:11px 12px; border-bottom:1px solid rgba(176,141,87,.2); vertical-align:middle; }
+  .dtable tr:last-child td{ border-bottom:none; }
+  .pill{ display:inline-block; font-family:var(--sans); font-size:clamp(8.5px,1vw,10px); font-weight:600;
+    letter-spacing:.08em; text-transform:uppercase; padding:3px 10px; border-radius:20px; white-space:nowrap; }
+  .pill.ok{ background:rgba(89,140,70,.16); color:#3f7a35; }
+  .pill.due{ background:rgba(176,141,87,.20); color:#8a6a32; }
+  .pill.late{ background:rgba(156,47,61,.16); color:#9c2f3d; }
+
   .facts{ display:grid; grid-template-columns:repeat(2,1fr); gap:clamp(10px,1.6vw,16px); }
   @media (max-width:620px){ .facts{ grid-template-columns:1fr; } }
   .fact{ display:flex; gap:14px; align-items:flex-start; background:#fffdf8; border:1px solid var(--line);
@@ -181,7 +195,6 @@
   .fact p{ font-family:var(--sans); font-weight:400; font-size:clamp(11px,1.45vw,13px);
     color:var(--ink-soft); margin-top:.4em; line-height:1.5; }
 
-  /* about-me footer */
   .site-foot{ margin-top:clamp(30px,4.5vw,52px); padding-top:clamp(20px,3vw,30px);
     border-top:1px solid var(--line); display:flex; flex-wrap:wrap; gap:clamp(16px,3vw,40px);
     align-items:flex-start; justify-content:space-between; }
@@ -225,7 +238,6 @@
         <path d="M60 57 v14 M52 73 h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
         <path d="M60 44 q-7 -7 -2 -13 q6 4 2 13" fill="currentColor" opacity=".85"/>
       </svg>
-      <!-- ===== EDIT WELCOME TEXT ===== -->
       <p class="kicker">Estate Analytics</p>
       <h1><span class="l1">Welcome to the</span><span class="l2">Vintage Report</span></h1>
       <div class="rule" aria-hidden="true"><i></i><b></b><i></i></div>
@@ -234,102 +246,20 @@
       <a class="enter" id="enterBtn" href="#dashboard" aria-label="Enter the dashboard">
         Enter the dashboard <span class="arrow" aria-hidden="true">→</span></a>
       <p class="foot">Vintage 2024 · Cellar to Screen</p>
-      <!-- ===== END WELCOME TEXT ===== -->
     </main>
   </section>
 
-  <!-- ============ SCREEN 2 — FERMENTATION DASHBOARD ============ -->
+  <!-- ============ SCREEN 2 — DASHBOARD ============ -->
   <section class="screen" id="dashboard" aria-hidden="true">
     <div class="panel">
-
-      <!-- ===== TOP DASHBOARD NAV (point hrefs at your Tableau dashboards) ===== -->
       <nav class="dash-nav">
         <a class="back" id="backBtn" href="#" role="button">← Back</a>
-        <div class="tabs">
-          <a class="tab active" href="#dashboard">Fermentation</a>
-          <a class="tab" href="#dashboard">Overview</a>
-          <a class="tab" href="#dashboard">Production</a>
-          <a class="tab" href="#dashboard">Sales &amp; DTC</a>
-          <a class="tab" href="#dashboard">Compliance</a>
-        </div>
-        <span class="live"><span class="dot"></span>Fermenting</span>
+        <div class="tabs" id="tabs"></div>
+        <span class="live"><span class="dot"></span>Live</span>
       </nav>
-
-      <div class="head">
-        <!-- ===== EDIT HEADLINE ===== -->
-        <p class="dash-kicker">The Cellar Floor</p>
-        <h2>Fermentation, live</h2>
-        <p class="dash-sub">Real-time look at the tanks turning grape sugar into wine.
-          Cards and tanks below are placeholders — swap in your Tableau views and live values.</p>
-      </div>
-
-      <div class="sec-label">Cellar at a glance</div>
-      <div class="kpis">
-        <div class="kpi"><div class="lab">Active Ferments</div><div class="val">12</div></div>
-        <div class="kpi"><div class="lab">Avg Brix</div><div class="val">11.8<small>°Bx</small></div></div>
-        <div class="kpi"><div class="lab">Cellar Temp</div><div class="val">26<small>°C</small></div></div>
-        <div class="kpi"><div class="lab">Day of Ferment</div><div class="val">7</div></div>
-      </div>
-
-      <div class="sec-label">Fermenters</div>
-      <!-- data-fill = wine level in the vessel (0–1); bar width = % to dry. Edit freely. -->
-      <div class="tanks" id="tanks">
-        <figure class="tank" data-fill="0.88">
-          <div class="viz"></div>
-          <div class="name">Tank A · Cabernet</div>
-          <div class="bar"><span style="width:20%"></span></div>
-          <div class="bar-lab">20% to dry · Day 5</div>
-          <ul class="stats">
-            <li><span>Brix</span><b>19.2°</b></li><li><span>Temp</span><b>27°C</b></li>
-            <li><span>pH</span><b>3.5</b></li><li><span>Vol</span><b>4,800 L</b></li>
-          </ul>
-        </figure>
-        <figure class="tank" data-fill="0.86">
-          <div class="viz"></div>
-          <div class="name">Tank B · Merlot</div>
-          <div class="bar"><span style="width:53%"></span></div>
-          <div class="bar-lab">53% to dry · Day 7</div>
-          <ul class="stats">
-            <li><span>Brix</span><b>11.4°</b></li><li><span>Temp</span><b>26°C</b></li>
-            <li><span>pH</span><b>3.6</b></li><li><span>Vol</span><b>5,200 L</b></li>
-          </ul>
-        </figure>
-        <figure class="tank" data-fill="0.85">
-          <div class="viz"></div>
-          <div class="name">Tank C · Syrah</div>
-          <div class="bar"><span style="width:72%"></span></div>
-          <div class="bar-lab">72% to dry · Day 9</div>
-          <ul class="stats">
-            <li><span>Brix</span><b>6.8°</b></li><li><span>Temp</span><b>25°C</b></li>
-            <li><span>pH</span><b>3.7</b></li><li><span>Vol</span><b>3,600 L</b></li>
-          </ul>
-        </figure>
-        <figure class="tank" data-fill="0.90">
-          <div class="viz"></div>
-          <div class="name">Tank D · Pinot Noir</div>
-          <div class="bar"><span style="width:91%"></span></div>
-          <div class="bar-lab">91% to dry · Day 11</div>
-          <ul class="stats">
-            <li><span>Brix</span><b>2.1°</b></li><li><span>Temp</span><b>18°C</b></li>
-            <li><span>pH</span><b>3.6</b></li><li><span>Vol</span><b>2,900 L</b></li>
-          </ul>
-        </figure>
-      </div>
-
-      <div class="sec-label">About the ferment</div>
-      <div class="facts">
-        <div class="fact"><span class="ic">≈</span><div><h4>Sugar → alcohol + CO₂</h4>
-          <p>Yeast eats the grape sugar, giving off alcohol and the carbon-dioxide bubbles rising through every tank.</p></div></div>
-        <div class="fact"><span class="ic">°Bx</span><div><h4>Brix falls to dry</h4>
-          <p>Must starts near 22–25 °Brix and drops toward 0 as the sugar is consumed — that's how you track progress.</p></div></div>
-        <div class="fact"><span class="ic">🌡</span><div><h4>Temperature steers style</h4>
-          <p>Reds ferment warm (24–30 °C) to pull colour and tannin; whites stay cool (12–18 °C) to protect aromatics.</p></div></div>
-        <div class="fact"><span class="ic">⏳</span><div><h4>5–14 days of primary</h4>
-          <p>Primary fermentation runs about one to two weeks before the wine is pressed off and moved to barrel or tank.</p></div></div>
-      </div>
-
-      <!-- ===== EDIT ABOUT-ME FOOTER ===== -->
+      <div id="view"></div>
       <footer class="site-foot">
+        <!-- ===== EDIT ABOUT-ME ===== -->
         <div class="me">
           <p class="me-kick">About</p>
           <h3>Ankur Napa</h3>
@@ -342,86 +272,258 @@
         </div>
         <p class="copy">© 2024 Ankur Napa<br/>Estate Analytics</p>
       </footer>
-      <!-- ===== END ABOUT-ME FOOTER ===== -->
     </div>
   </section>
 
 <script>
-  // ---- screen routing (hash-based: browser back + deep links work) ----
-  function sync(){ const on = location.hash === '#dashboard';
+  // =========================================================
+  //  SEEDED DATA — edit these to change every view
+  // =========================================================
+  const TANKS = [
+    { id:'A', name:'Cabernet',   temp:28, ph:3.6,  vol:5200, color:'#6b1f2a', brix:[24.8,23.2,20.5,17.0,13.6,10.6,8.4] },
+    { id:'B', name:'Merlot',     temp:26, ph:3.55, vol:4800, color:'#9c2f3d', brix:[24.0,22.6,19.4,15.2,11.4] },
+    { id:'C', name:'Syrah',      temp:27, ph:3.7,  vol:3600, color:'#b08d57', brix:[25.2,24.0,21.6,18.4,15.0,11.6,8.0,5.2] },
+    { id:'D', name:'Pinot Noir', temp:18, ph:3.65, vol:2900, color:'#7a5230', brix:[23.6,20.8,16.4,11.2,6.4,2.8,1.1] }
+  ];
+  const CASES_BY_VARIETAL = [
+    {label:'Cabernet',val:6200,color:'#6b1f2a'},{label:'Merlot',val:4100,color:'#9c2f3d'},
+    {label:'Syrah',val:3300,color:'#b08d57'},{label:'Pinot',val:2600,color:'#7a5230'},{label:'Chard',val:2200,color:'#8a6a32'}
+  ];
+  const TONS_BY_VARIETAL = [
+    {label:'Cabernet',val:96},{label:'Merlot',val:70},{label:'Syrah',val:58},{label:'Pinot',val:44},{label:'Chard',val:44}
+  ];
+  const REVENUE_BY_CHANNEL = [
+    {label:'Tasting Room',val:820},{label:'Wine Club',val:710},{label:'Online DTC',val:430},{label:'Wholesale',val:640}
+  ];
+  const FILINGS = [
+    {report:'TTB F 5120.17 — Wine Premises',period:'Apr 2026',due:'May 15',status:['Filed','ok']},
+    {report:'TTB Excise Tax (5000.24)',period:'Q1 2026',due:'Apr 14',status:['Filed','ok']},
+    {report:'CA Sales & Use Tax',period:'Apr 2026',due:'May 31',status:['Due','due']},
+    {report:'Direct-Ship Report — Texas',period:'2025 Annual',due:'Jun 30',status:['Due','due']},
+    {report:'Direct-Ship Report — Florida',period:'Apr 2026',due:'May 10',status:['Overdue','late']}
+  ];
+
+  // ---- tiny DOM + svg helpers ----
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const rnd=(a,b)=>a+Math.random()*(b-a);
+  const SVGNS='http://www.w3.org/2000/svg';
+  const el=(t,c,x)=>{const e=document.createElement(t); if(c)e.className=c; if(x!=null)e.textContent=x; return e;};
+  const svgFromString=s=>{ const d=new DOMParser().parseFromString(s,'image/svg+xml').documentElement;
+    return (d && d.localName==='svg') ? document.importNode(d,true) : null; };
+  const curBrix=t=>t.brix[t.brix.length-1], startBrix=t=>t.brix[0];
+  const progress=t=>Math.max(0,Math.min(100, Math.round((startBrix(t)-curBrix(t))/startBrix(t)*100)));
+
+  // ---- shared builders ----
+  function head(k,t,s){ const h=el('div','head'); h.appendChild(el('p','dash-kicker',k));
+    h.appendChild(el('h2',null,t)); h.appendChild(el('p','dash-sub',s)); return h; }
+  function secLabel(x){ return el('div','sec-label',x); }
+  function kpiGrid(items){ const g=el('div','kpis'); items.forEach(k=>{ const c=el('div','kpi');
+    c.appendChild(el('div','lab',k.lab)); const v=el('div','val'); v.appendChild(document.createTextNode(k.val));
+    if(k.unit) v.appendChild(el('small',null,k.unit)); c.appendChild(v); g.appendChild(c); }); return g; }
+  function chartCard(svgNode, legendNode){ const c=el('div','chart-card');
+    if(svgNode) c.appendChild(svgNode); if(legendNode) c.appendChild(legendNode); return c; }
+
+  // ---- SVG fermenter tank ----
+  function tankSVG(i, level){
+    const bx=24, bw=72, top=34, bot=140, H=bot-top, fy=+(top+(1-level)*H).toFixed(1);
+    const S='st'+i,W='wn'+i,B='bb'+i,C='cl'+i; let bubbles='';
+    const n=reduce?0:Math.round(rnd(7,10));
+    for(let k=0;k<n;k++){ const cx=+rnd(bx+9,bx+bw-9).toFixed(1),r=+rnd(1.4,3.1).toFixed(1),
+      d=+rnd(3,5.8).toFixed(1),bg=(-rnd(0,d)).toFixed(1),sy=bot-3;
+      bubbles+=`<circle cx="${cx}" cy="${sy}" r="${r}" fill="url(#${B})" opacity="0">`+
+        `<animate attributeName="cy" values="${sy};${(fy+3).toFixed(1)}" dur="${d}s" begin="${bg}s" repeatCount="indefinite"/>`+
+        `<animate attributeName="opacity" values="0;.9;.9;0" keyTimes="0;.15;.8;1" dur="${d}s" begin="${bg}s" repeatCount="indefinite"/></circle>`; }
+    return `<svg xmlns="${SVGNS}" viewBox="0 0 120 214" role="img" aria-label="fermentation tank">
+      <defs>
+        <linearGradient id="${S}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8d887f"/>
+          <stop offset=".22" stop-color="#eceae3"/><stop offset=".5" stop-color="#b4afa6"/>
+          <stop offset=".78" stop-color="#e2ded6"/><stop offset="1" stop-color="#8d887f"/></linearGradient>
+        <linearGradient id="${W}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b23446"/>
+          <stop offset=".5" stop-color="#7a2430"/><stop offset="1" stop-color="#4a141d"/></linearGradient>
+        <radialGradient id="${B}" cx=".35" cy=".3" r=".75"><stop offset="0" stop-color="#fff7ec" stop-opacity=".95"/>
+          <stop offset=".45" stop-color="#e9cfa0" stop-opacity=".55"/><stop offset="1" stop-color="#fff7ec" stop-opacity="0"/></radialGradient>
+        <clipPath id="${C}"><rect x="${bx}" y="${top}" width="${bw}" height="${H}" rx="8"/></clipPath>
+      </defs>
+      <g stroke="url(#${S})" stroke-width="4.5" stroke-linecap="round" fill="none">
+        <line x1="${bx+12}" y1="150" x2="${bx+3}" y2="210"/><line x1="${bx+bw-12}" y1="150" x2="${bx+bw-3}" y2="210"/></g>
+      <line x1="60" y1="162" x2="60" y2="210" stroke="#9a958c" stroke-width="3.6" stroke-linecap="round"/>
+      <rect x="${bx}" y="${top}" width="${bw}" height="${H}" rx="8" fill="#f6f1e8" fill-opacity=".35"/>
+      <g clip-path="url(#${C})">
+        <rect x="${bx}" y="${fy}" width="${bw}" height="${(bot-fy).toFixed(1)}" fill="url(#${W})"/>
+        <rect x="${bx}" y="${fy}" width="${bw}" height="2" fill="#ffe4d4" fill-opacity=".75"/>
+        <rect x="${bx+6}" y="${top+6}" width="7" height="${H-26}" rx="3.5" fill="#ffffff" fill-opacity=".18"/>
+        ${bubbles}
+      </g>
+      <path d="M${bx} ${bot} L${bx+bw} ${bot} L66 184 L54 184 Z" fill="url(#${S})" stroke="#79746c" stroke-width=".6"/>
+      <rect x="55" y="184" width="10" height="10" rx="1.5" fill="#9a958c"/>
+      <rect x="${bx-1}" y="70" width="${bw+2}" height="5" rx="1.5" fill="url(#${S})"/>
+      <rect x="${bx-1}" y="106" width="${bw+2}" height="5" rx="1.5" fill="url(#${S})"/>
+      <rect x="${bx}" y="${top}" width="${bw}" height="${H}" rx="8" fill="none" stroke="#868178" stroke-width="1.4"/>
+      <ellipse cx="60" cy="${top}" rx="${bw/2+1}" ry="10" fill="url(#${S})" stroke="#79746c" stroke-width=".6"/>
+      <circle cx="60" cy="26" r="6.5" fill="url(#${S})" stroke="#79746c" stroke-width=".8"/>
+      <rect x="58" y="13" width="4" height="9" rx="1.5" fill="#9a958c"/></svg>`;
+  }
+
+  function tanksGrid(){ const wrap=el('div','tanks');
+    TANKS.forEach((t,i)=>{ const fig=el('figure','tank'); const viz=el('div','viz');
+      const level=Math.max(.42,Math.min(.9, t.vol/6000)); const svg=svgFromString(tankSVG(i,level)); if(svg) viz.appendChild(svg);
+      fig.appendChild(viz); fig.appendChild(el('div','name',`Tank ${t.id} · ${t.name}`));
+      const bar=el('div','bar'); const sp=el('span'); sp.style.width=progress(t)+'%'; bar.appendChild(sp); fig.appendChild(bar);
+      fig.appendChild(el('div','bar-lab',`${progress(t)}% to dry · Day ${t.brix.length-1}`));
+      const ul=el('ul','stats'); const stat=(l,v)=>{const li=el('li'); li.appendChild(el('span',null,l)); li.appendChild(el('b',null,v)); return li;};
+      ul.appendChild(stat('Brix',curBrix(t).toFixed(1)+'°')); ul.appendChild(stat('Temp',t.temp+'°C'));
+      ul.appendChild(stat('pH',t.ph.toFixed(2))); ul.appendChild(stat('Vol',t.vol.toLocaleString()+' L'));
+      fig.appendChild(ul); wrap.appendChild(fig); });
+    return wrap; }
+
+  // ---- charts ----
+  function brixCard(){
+    const W=820,Hh=320,P={l:46,r:18,t:18,b:42}, maxDay=Math.max(...TANKS.map(t=>t.brix.length-1)), maxB=26;
+    const X=d=>P.l+(maxDay?d/maxDay:0)*(W-P.l-P.r), Y=b=>P.t+(1-b/maxB)*(Hh-P.t-P.b);
+    let g='',ax='',ln='';
+    for(let b=0;b<=25;b+=5){ const y=Y(b).toFixed(1);
+      g+=`<line x1="${P.l}" y1="${y}" x2="${W-P.r}" y2="${y}" stroke="rgba(176,141,87,.28)" stroke-width="1"/>`;
+      ax+=`<text x="${P.l-8}" y="${(+y+3).toFixed(1)}" text-anchor="end" font-family="Hanken Grotesk,sans-serif" font-size="11" fill="#8a6a32">${b}</text>`; }
+    for(let d=0;d<=maxDay;d++){ const x=X(d).toFixed(1);
+      ax+=`<text x="${x}" y="${Hh-P.b+18}" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-size="11" fill="#8a6a32">${d}</text>`; }
+    ax+=`<text transform="translate(13,${(Hh/2).toFixed(0)}) rotate(-90)" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-size="10.5" letter-spacing="1.5" fill="#8a6a32">°BRIX</text>`;
+    ax+=`<text x="${(W/2).toFixed(0)}" y="${Hh-3}" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-size="10.5" letter-spacing="1.5" fill="#8a6a32">DAY OF FERMENT</text>`;
+    TANKS.forEach(t=>{ const pts=t.brix.map((b,d)=>`${X(d).toFixed(1)},${Y(b).toFixed(1)}`).join(' ');
+      ln+=`<polyline points="${pts}" fill="none" stroke="${t.color}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>`;
+      t.brix.forEach((b,d)=>{ ln+=`<circle cx="${X(d).toFixed(1)}" cy="${Y(b).toFixed(1)}" r="2.6" fill="#fffdf8" stroke="${t.color}" stroke-width="1.6"/>`; }); });
+    const svg=svgFromString(`<svg xmlns="${SVGNS}" viewBox="0 0 ${W} ${Hh}" role="img" aria-label="Brix by day">
+      <line x1="${P.l}" y1="${P.t}" x2="${P.l}" y2="${Hh-P.b}" stroke="#86817880" stroke-width="1"/>
+      <line x1="${P.l}" y1="${Hh-P.b}" x2="${W-P.r}" y2="${Hh-P.b}" stroke="#868178" stroke-width="1"/>${g}${ln}${ax}</svg>`);
+    const lg=el('div','legend'); TANKS.forEach(t=>{ const it=el('span','it'); const sw=el('span','sw'); sw.style.background=t.color;
+      it.appendChild(sw); it.appendChild(document.createTextNode(`Tank ${t.id} · ${t.name}`)); lg.appendChild(it); });
+    return chartCard(svg, lg);
+  }
+
+  function barCard(items, fmt){
+    fmt = fmt || (v=>v.toLocaleString());
+    const W=820,Hh=300,P={l:54,r:18,t:22,b:46}, max=(Math.max(...items.map(d=>d.val))||1)*1.16;
+    const step=(W-P.l-P.r)/items.length, bw=Math.min(70, step*0.52), Y=v=>P.t+(1-v/max)*(Hh-P.t-P.b);
+    let s='';
+    for(let i=0;i<=4;i++){ const v=max*i/4, y=Y(v).toFixed(1);
+      s+=`<line x1="${P.l}" y1="${y}" x2="${W-P.r}" y2="${y}" stroke="rgba(176,141,87,.26)" stroke-width="1"/>`;
+      s+=`<text x="${P.l-8}" y="${(+y+3).toFixed(1)}" text-anchor="end" font-family="Hanken Grotesk,sans-serif" font-size="10.5" fill="#8a6a32">${fmt(Math.round(v))}</text>`; }
+    items.forEach((d,i)=>{ const cx=P.l+step*i+step/2, y=Y(d.val), h=(Hh-P.b)-y;
+      s+=`<rect x="${(cx-bw/2).toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="3" fill="${d.color||'#7a2430'}"/>`;
+      s+=`<text x="${cx.toFixed(1)}" y="${(y-7).toFixed(1)}" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-weight="600" font-size="11.5" fill="#6b1f2a">${fmt(d.val)}</text>`;
+      s+=`<text x="${cx.toFixed(1)}" y="${Hh-P.b+18}" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-size="11" fill="#5d4b44">${d.label}</text>`; });
+    s+=`<line x1="${P.l}" y1="${Hh-P.b}" x2="${W-P.r}" y2="${Hh-P.b}" stroke="#868178" stroke-width="1"/>`;
+    return chartCard(svgFromString(`<svg xmlns="${SVGNS}" viewBox="0 0 ${W} ${Hh}" role="img">${s}</svg>`));
+  }
+
+  function filingTable(){
+    const card=el('div','chart-card'); const tbl=el('table','dtable');
+    const thead=el('thead'), htr=el('tr'); ['Report','Period','Due','Status'].forEach(h=>htr.appendChild(el('th',null,h)));
+    thead.appendChild(htr); tbl.appendChild(thead); const tb=el('tbody');
+    FILINGS.forEach(f=>{ const tr=el('tr'); tr.appendChild(el('td',null,f.report)); tr.appendChild(el('td',null,f.period));
+      tr.appendChild(el('td',null,f.due)); const td=el('td'); td.appendChild(el('span','pill '+f.status[1], f.status[0]));
+      tr.appendChild(td); tb.appendChild(tr); });
+    tbl.appendChild(tb); card.appendChild(tbl); return card;
+  }
+
+  function factsGrid(){
+    const list=[
+      ['≈','Sugar → alcohol + CO₂','Yeast eats the grape sugar, giving off alcohol and the carbon-dioxide bubbles rising through every tank.'],
+      ['°Bx','Brix falls to dry','Must starts near 22–25 °Brix and drops toward 0 as the sugar is consumed — that’s the curve above.'],
+      ['🌡','Temperature steers style','Reds ferment warm (24–30 °C) to pull colour and tannin; whites stay cool (12–18 °C) to protect aromatics.'],
+      ['⏳','5–14 days of primary','Primary fermentation runs about one to two weeks before the wine is pressed off to barrel or tank.']
+    ];
+    const g=el('div','facts'); list.forEach(f=>{ const d=el('div','fact'); d.appendChild(el('span','ic',f[0]));
+      const box=el('div'); box.appendChild(el('h4',null,f[1])); box.appendChild(el('p',null,f[2])); d.appendChild(box); g.appendChild(d); });
+    return g;
+  }
+
+  // ---- views ----
+  function vFermentation(){
+    const f=document.createDocumentFragment();
+    const active=TANKS.filter(t=>curBrix(t)>0.5).length;
+    const avgBrix=TANKS.reduce((s,t)=>s+curBrix(t),0)/TANKS.length;
+    const avgTemp=TANKS.reduce((s,t)=>s+t.temp,0)/TANKS.length;
+    const totVol=TANKS.reduce((s,t)=>s+t.vol,0);
+    f.appendChild(head('The Cellar Floor','Fermentation, live','Live tanks turning grape sugar into wine — every value is computed from the seeded dataset.'));
+    f.appendChild(secLabel('Cellar at a glance'));
+    f.appendChild(kpiGrid([{lab:'Active Ferments',val:String(active)},{lab:'Avg Brix',val:avgBrix.toFixed(1),unit:'°Bx'},
+      {lab:'Avg Temp',val:avgTemp.toFixed(0),unit:'°C'},{lab:'Total Volume',val:(totVol/1000).toFixed(1),unit:'kL'}]));
+    f.appendChild(secLabel('Fermenters')); f.appendChild(tanksGrid());
+    f.appendChild(secLabel('Fermentation curve · °Brix by day')); f.appendChild(brixCard());
+    f.appendChild(secLabel('About the ferment')); f.appendChild(factsGrid());
+    return f;
+  }
+  function vOverview(){
+    const f=document.createDocumentFragment();
+    f.appendChild(head('Estate Overview','The vintage at a glance','A top-line read on the whole estate — cellar, cases, revenue, and club.'));
+    f.appendChild(secLabel('Key numbers'));
+    f.appendChild(kpiGrid([{lab:'Active Tanks',val:'4'},{lab:'Cases YTD',val:'18.4',unit:'K'},
+      {lab:'Revenue YTD',val:'$2.6',unit:'M'},{lab:'Wine Club',val:'1,240'}]));
+    f.appendChild(secLabel('Cases produced by varietal')); f.appendChild(barCard(CASES_BY_VARIETAL));
+    return f;
+  }
+  function vProduction(){
+    const f=document.createDocumentFragment();
+    f.appendChild(head('Production','Crush to bottle','Harvest intake, lots in work, and bottling output for the 2024 vintage.'));
+    f.appendChild(secLabel('Key numbers'));
+    f.appendChild(kpiGrid([{lab:'Tons Crushed',val:'312'},{lab:'Active Lots',val:'18'},
+      {lab:'Avg Yield',val:'3.6',unit:'t/ac'},{lab:'Cases Bottled',val:'16.8',unit:'K'}]));
+    f.appendChild(secLabel('Tons crushed by varietal')); f.appendChild(barCard(TONS_BY_VARIETAL, v=>v+' t'));
+    return f;
+  }
+  function vSales(){
+    const f=document.createDocumentFragment();
+    f.appendChild(head('Sales & DTC','Where the wine goes','Direct-to-consumer leads the mix — tasting room, club, online, and wholesale.'));
+    f.appendChild(secLabel('Key numbers'));
+    f.appendChild(kpiGrid([{lab:'Revenue YTD',val:'$2.6',unit:'M'},{lab:'DTC Share',val:'58',unit:'%'},
+      {lab:'Club Members',val:'1,240'},{lab:'Avg Order',val:'$186'}]));
+    f.appendChild(secLabel('Revenue by channel ($K)')); f.appendChild(barCard(REVENUE_BY_CHANNEL, v=>'$'+v.toLocaleString()));
+    return f;
+  }
+  function vCompliance(){
+    const f=document.createDocumentFragment();
+    f.appendChild(head('Compliance','TTB & state filings','Federal and state reporting status, excise due, and upcoming deadlines.'));
+    f.appendChild(secLabel('Key numbers'));
+    f.appendChild(kpiGrid([{lab:'Reports Filed',val:'11'},{lab:'Excise Due',val:'$14.2',unit:'K'},
+      {lab:'Open Tasks',val:'3'},{lab:'States Licensed',val:'32'}]));
+    f.appendChild(secLabel('Upcoming filings')); f.appendChild(filingTable());
+    return f;
+  }
+
+  const VIEWS=[
+    {id:'fermentation', label:'Fermentation', build:vFermentation},
+    {id:'overview',     label:'Overview',     build:vOverview},
+    {id:'production',   label:'Production',   build:vProduction},
+    {id:'sales',        label:'Sales & DTC',  build:vSales},
+    {id:'compliance',   label:'Compliance',   build:vCompliance}
+  ];
+
+  function activate(id){
+    document.querySelectorAll('#tabs .tab').forEach(t=>t.classList.toggle('active', t.dataset.view===id));
+    const host=document.getElementById('view'); host.textContent='';
+    const v=VIEWS.find(x=>x.id===id)||VIEWS[0];
+    host.appendChild(v.build());
+    host.style.animation='none'; void host.offsetWidth; host.style.animation='';  // restart fade
+    const sc=document.getElementById('dashboard'); if(sc) sc.scrollTop=0;
+  }
+  function buildTabs(){ const wrap=document.getElementById('tabs');
+    VIEWS.forEach(v=>{ const a=el('a','tab',v.label); a.href='#'+v.id; a.dataset.view=v.id;
+      a.addEventListener('click',e=>{ e.preventDefault(); location.hash=v.id; }); wrap.appendChild(a); }); }
+
+  // ---- welcome <-> dashboard + view routing (hash-driven, deep-linkable) ----
+  const VIEW_IDS = VIEWS.map(v=>v.id);
+  function viewFromHash(){ const h=location.hash.replace('#',''); if(h==='dashboard') return 'fermentation';
+    return VIEW_IDS.indexOf(h)>=0 ? h : null; }
+  function route(){ const vid=viewFromHash(); const on=vid!==null;
     document.body.classList.toggle('dash', on);
-    document.getElementById('dashboard').setAttribute('aria-hidden', on ? 'false':'true'); }
+    document.getElementById('dashboard').setAttribute('aria-hidden', on?'false':'true');
+    if(on) activate(vid); }
   document.getElementById('enterBtn').addEventListener('click', e=>{ e.preventDefault(); location.hash='dashboard'; });
   document.getElementById('backBtn').addEventListener('click', e=>{ e.preventDefault();
-    if (history.length>1 && location.hash==='#dashboard') history.back(); else location.hash=''; });
-  window.addEventListener('hashchange', sync);
+    if (history.length>1 && document.body.classList.contains('dash')) history.back(); else location.hash=''; });
+  window.addEventListener('hashchange', route);
 
-  // ---- SVG fermentation tanks (author-defined markup; injected via DOMParser) ----
-  (function(){
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const rnd=(a,b)=>a+Math.random()*(b-a);
-    const bx=24, bw=72, top=34, bot=140, H=bot-top;
-
-    function tankSVG(i, fill){
-      const fy = +(top + (1-fill)*H).toFixed(1);
-      const S='st'+i, W='wn'+i, B='bb'+i, C='cl'+i;
-      let bubbles='';
-      const n = reduce ? 0 : Math.round(rnd(7,10));
-      for(let k=0;k<n;k++){
-        const cx=+rnd(bx+9,bx+bw-9).toFixed(1), r=+rnd(1.4,3.1).toFixed(1),
-              d=+rnd(3,5.8).toFixed(1), bg=(-rnd(0,d)).toFixed(1), sy=bot-3;
-        bubbles+=`<circle cx="${cx}" cy="${sy}" r="${r}" fill="url(#${B})" opacity="0">`+
-          `<animate attributeName="cy" values="${sy};${(fy+3).toFixed(1)}" dur="${d}s" begin="${bg}s" repeatCount="indefinite"/>`+
-          `<animate attributeName="opacity" values="0;.9;.9;0" keyTimes="0;.15;.8;1" dur="${d}s" begin="${bg}s" repeatCount="indefinite"/>`+
-          `</circle>`;
-      }
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 214" role="img" aria-label="fermentation tank">
-        <defs>
-          <linearGradient id="${S}" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stop-color="#8d887f"/><stop offset=".22" stop-color="#eceae3"/>
-            <stop offset=".5" stop-color="#b4afa6"/><stop offset=".78" stop-color="#e2ded6"/>
-            <stop offset="1" stop-color="#8d887f"/></linearGradient>
-          <linearGradient id="${W}" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#b23446"/><stop offset=".5" stop-color="#7a2430"/>
-            <stop offset="1" stop-color="#4a141d"/></linearGradient>
-          <radialGradient id="${B}" cx=".35" cy=".3" r=".75">
-            <stop offset="0" stop-color="#fff7ec" stop-opacity=".95"/>
-            <stop offset=".45" stop-color="#e9cfa0" stop-opacity=".55"/>
-            <stop offset="1" stop-color="#fff7ec" stop-opacity="0"/></radialGradient>
-          <clipPath id="${C}"><rect x="${bx}" y="${top}" width="${bw}" height="${H}" rx="8"/></clipPath>
-        </defs>
-        <g stroke="url(#${S})" stroke-width="4.5" stroke-linecap="round" fill="none">
-          <line x1="${bx+12}" y1="150" x2="${bx+3}" y2="210"/>
-          <line x1="${bx+bw-12}" y1="150" x2="${bx+bw-3}" y2="210"/></g>
-        <line x1="60" y1="162" x2="60" y2="210" stroke="#9a958c" stroke-width="3.6" stroke-linecap="round"/>
-        <rect x="${bx}" y="${top}" width="${bw}" height="${H}" rx="8" fill="#f6f1e8" fill-opacity=".35"/>
-        <g clip-path="url(#${C})">
-          <rect x="${bx}" y="${fy}" width="${bw}" height="${(bot-fy).toFixed(1)}" fill="url(#${W})"/>
-          <rect x="${bx}" y="${fy}" width="${bw}" height="2" fill="#ffe4d4" fill-opacity=".75"/>
-          <rect x="${bx+6}" y="${top+6}" width="7" height="${H-26}" rx="3.5" fill="#ffffff" fill-opacity=".18"/>
-          ${bubbles}
-        </g>
-        <path d="M${bx} ${bot} L${bx+bw} ${bot} L66 184 L54 184 Z" fill="url(#${S})" stroke="#79746c" stroke-width=".6"/>
-        <rect x="55" y="184" width="10" height="10" rx="1.5" fill="#9a958c"/>
-        <rect x="${bx-1}" y="70" width="${bw+2}" height="5" rx="1.5" fill="url(#${S})"/>
-        <rect x="${bx-1}" y="106" width="${bw+2}" height="5" rx="1.5" fill="url(#${S})"/>
-        <rect x="${bx}" y="${top}" width="${bw}" height="${H}" rx="8" fill="none" stroke="#868178" stroke-width="1.4"/>
-        <ellipse cx="60" cy="${top}" rx="${bw/2+1}" ry="10" fill="url(#${S})" stroke="#79746c" stroke-width=".6"/>
-        <circle cx="60" cy="26" r="6.5" fill="url(#${S})" stroke="#79746c" stroke-width=".8"/>
-        <rect x="58" y="13" width="4" height="9" rx="1.5" fill="#9a958c"/>
-      </svg>`;
-    }
-
-    document.querySelectorAll('#tanks .tank').forEach((fig,i)=>{
-      const fill=Math.min(.92, Math.max(.1, parseFloat(fig.dataset.fill||'.6')));
-      const viz=fig.querySelector('.viz');
-      const doc=new DOMParser().parseFromString(tankSVG(i,fill),'image/svg+xml');
-      const svg=doc.documentElement;
-      if(viz && svg && svg.localName==='svg'){ viz.appendChild(document.importNode(svg,true)); }
-    });
-  })();
-
-  sync();
+  buildTabs(); route();
 </script>
 </body>
 </html>
