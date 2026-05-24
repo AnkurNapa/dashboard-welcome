@@ -7,9 +7,10 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%236b1f2a'/%3E%3Ctext x='8' y='12' font-family='Georgia' font-size='11' fill='%23f5efe2' text-anchor='middle'%3EE%3C/text%3E%3C/svg%3E" />
 
 <!-- ============================================================= -->
-<!--  EDIT YOUR TEXT + LINK in the marked spots inside <body>.     -->
-<!--  Host: push this file to a GitHub repo, enable Pages, then    -->
-<!--  point a Tableau "Web Page" object at the Pages URL.          -->
+<!--  Screen 1 = welcome splash. Click "Enter" -> Screen 2 =        -->
+<!--  fermentation dashboard with rising-bubble animation.          -->
+<!--  Edit text in the marked spots. Host on GitHub Pages,          -->
+<!--  embed the URL in a Tableau "Web Page" object.                 -->
 <!-- ============================================================= -->
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -18,202 +19,228 @@
 
 <style>
   :root{
-    --wine:#6b1f2a;
-    --wine-deep:#4a141d;
-    --cream:#f5efe2;
-    --cream-2:#efe6d3;
-    --ink:#2b1a18;
-    --brass:#b08d57;
-    --brass-2:#caa46b;
-    --serif:"Fraunces", "Hoefler Text", Georgia, "Times New Roman", serif;
-    --sans:"Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --wine:#6b1f2a; --wine-deep:#4a141d; --wine-bright:#8a2b39;
+    --cream:#f5efe2; --cream-2:#efe6d3; --ink:#2b1a18;
+    --brass:#b08d57; --brass-2:#caa46b;
+    --serif:"Fraunces","Hoefler Text",Georgia,"Times New Roman",serif;
+    --sans:"Hanken Grotesk",ui-sans-serif,system-ui,sans-serif;
   }
-
   *{ box-sizing:border-box; margin:0; padding:0; }
   html,body{ height:100%; }
-
   body{
-    font-family:var(--serif);
-    color:var(--ink);
-    background:var(--cream);
-    min-height:100svh;
-    display:flex;
-    align-items:safe center;
-    justify-content:center;
-    padding:clamp(16px,3.5vw,48px);
-    overflow:auto;
-    position:relative;
-    -webkit-font-smoothing:antialiased;
-    text-rendering:optimizeLegibility;
+    font-family:var(--serif); color:var(--ink); background:var(--cream);
+    min-height:100svh; position:relative; overflow:hidden;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
   }
-
-  /* atmospheric burgundy glows + warm vignette for depth */
-  body::before{
-    content:"";
-    position:fixed; inset:0; z-index:0; pointer-events:none;
+  /* cream atmosphere (welcome) */
+  body::before{ content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
     background:
       radial-gradient(60% 55% at 85% -10%, rgba(107,31,42,.20), transparent 60%),
       radial-gradient(55% 50% at -10% 110%, rgba(107,31,42,.16), transparent 60%),
-      radial-gradient(120% 120% at 50% 40%, transparent 55%, rgba(74,20,29,.10));
-  }
-  /* fine paper grain */
-  body::after{
-    content:"";
-    position:fixed; inset:0; z-index:1; pointer-events:none;
+      radial-gradient(120% 120% at 50% 40%, transparent 55%, rgba(74,20,29,.10)); }
+  /* paper grain over everything */
+  body::after{ content:""; position:fixed; inset:0; z-index:6; pointer-events:none;
     opacity:.06; mix-blend-mode:multiply;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 
-  /* the framed card */
-  .stage{
-    position:relative; z-index:2;
-    width:min(700px,100%);
-    padding:clamp(26px,4.2vw,52px) clamp(22px,4.5vw,58px);
-    text-align:center;
-    border:1px solid rgba(176,141,87,.55);
-    outline:1px solid rgba(176,141,87,.28);
+  /* ---- screen scaffolding + cross-fade ---- */
+  .screen{ position:fixed; inset:0; z-index:2;
+    display:flex; align-items:safe center; justify-content:center;
+    padding:clamp(16px,3.5vw,48px); overflow:auto;
+    transition:opacity .7s ease, transform .8s cubic-bezier(.6,0,.2,1);
+    transition-property:opacity,transform,visibility; }
+  #dashboard{ opacity:0; visibility:hidden; transform:scale(1.04); pointer-events:none; }
+  body.dash #welcome{ opacity:0; visibility:hidden; transform:scale(.965); pointer-events:none; }
+  body.dash #dashboard{ opacity:1; visibility:visible; transform:none; pointer-events:auto; }
+
+  /* ============ SCREEN 1 — WELCOME ============ */
+  .stage{ position:relative; z-index:2; width:min(700px,100%);
+    padding:clamp(26px,4.2vw,52px) clamp(22px,4.5vw,58px); text-align:center;
+    border:1px solid rgba(176,141,87,.55); outline:1px solid rgba(176,141,87,.28);
     outline-offset:7px;
-    background:
-      linear-gradient(180deg, rgba(255,252,245,.55), rgba(239,230,211,.30));
-    box-shadow:0 30px 70px -40px rgba(74,20,29,.55);
-  }
-  /* corner diamonds on the frame */
-  .stage span.cnr{ position:absolute; width:7px; height:7px; background:var(--brass);
-    transform:rotate(45deg); }
+    background:linear-gradient(180deg, rgba(255,252,245,.55), rgba(239,230,211,.30));
+    box-shadow:0 30px 70px -40px rgba(74,20,29,.55); }
+  .stage span.cnr{ position:absolute; width:7px; height:7px; background:var(--brass); transform:rotate(45deg); }
   .cnr.tl{ top:-4px; left:-4px;} .cnr.tr{ top:-4px; right:-4px;}
   .cnr.bl{ bottom:-4px; left:-4px;} .cnr.br{ bottom:-4px; right:-4px;}
-
-  /* wax-seal emblem */
   .seal{ width:clamp(58px,8vw,76px); height:auto; display:block; margin:0 auto clamp(13px,2.2vw,18px);
     color:var(--brass); animation:rise .9s .05s both, float 7s ease-in-out 1.2s infinite; }
   .seal text{ font-family:var(--sans); font-weight:600; letter-spacing:2.4px; fill:var(--brass); }
-
-  .kicker{
-    font-family:var(--sans); font-weight:600;
-    font-size:clamp(11px,1.5vw,13px);
-    letter-spacing:.42em; text-transform:uppercase;
-    color:var(--wine);
-    margin-bottom:clamp(12px,2vw,18px);
-    padding-left:.42em;
-    animation:rise .9s .15s both;
-  }
-
-  h1{
-    font-weight:300; line-height:1.02;
-    color:var(--wine);
-    font-size:clamp(34px,6.6vw,62px);
-    font-optical-sizing:auto;
-    letter-spacing:-.01em;
-  }
+  .kicker{ font-family:var(--sans); font-weight:600; font-size:clamp(11px,1.5vw,13px);
+    letter-spacing:.42em; text-transform:uppercase; color:var(--wine);
+    margin-bottom:clamp(12px,2vw,18px); padding-left:.42em; animation:rise .9s .15s both; }
+  h1{ font-weight:300; line-height:1.02; color:var(--wine);
+    font-size:clamp(34px,6.6vw,62px); font-optical-sizing:auto; letter-spacing:-.01em; }
   h1 .l1{ display:block; font-size:.44em; font-weight:400; color:var(--ink);
     letter-spacing:.02em; margin-bottom:.12em; animation:rise .9s .28s both; }
   h1 .l2{ display:block; font-style:italic; font-weight:300; animation:rise 1s .4s both; }
-
   .rule{ display:flex; align-items:center; justify-content:center; gap:14px;
-    margin:clamp(16px,2.6vw,24px) auto clamp(14px,2.2vw,20px); max-width:320px;
-    animation:rise .9s .55s both; }
+    margin:clamp(16px,2.6vw,24px) auto clamp(14px,2.2vw,20px); max-width:320px; animation:rise .9s .55s both; }
   .rule i{ height:1px; flex:1; background:linear-gradient(90deg,transparent,var(--brass)); }
   .rule i:last-child{ background:linear-gradient(90deg,var(--brass),transparent); }
   .rule b{ width:6px; height:6px; background:var(--brass); transform:rotate(45deg); }
-
-  .sub{
-    font-size:clamp(14px,2vw,19px);
-    line-height:1.5; font-weight:300; color:var(--ink);
-    max-width:30ch; margin:0 auto clamp(22px,3.4vw,34px);
-    animation:rise .9s .68s both;
-  }
+  .sub{ font-size:clamp(14px,2vw,19px); line-height:1.5; font-weight:300; color:var(--ink);
+    max-width:30ch; margin:0 auto clamp(22px,3.4vw,34px); animation:rise .9s .68s both; }
   .sub em{ font-style:italic; color:var(--wine-deep); }
-
-  .enter{
-    --pad:clamp(13px,1.8vw,17px) clamp(26px,3.4vw,40px);
+  .enter{ --pad:clamp(13px,1.8vw,17px) clamp(26px,3.4vw,40px);
     position:relative; display:inline-flex; align-items:center; gap:.7em;
-    font-family:var(--sans); font-weight:600;
-    font-size:clamp(12px,1.6vw,14px);
-    letter-spacing:.2em; text-transform:uppercase; text-decoration:none;
-    color:var(--cream); padding:var(--pad);
-    background:var(--wine); border:1px solid var(--wine);
+    font-family:var(--sans); font-weight:600; font-size:clamp(12px,1.6vw,14px);
+    letter-spacing:.2em; text-transform:uppercase; text-decoration:none; cursor:pointer;
+    color:var(--cream); padding:var(--pad); background:var(--wine); border:1px solid var(--wine);
     overflow:hidden; isolation:isolate;
-    transition:color .45s ease, border-color .45s ease, transform .25s ease,
-               box-shadow .45s ease;
-    box-shadow:0 14px 26px -16px rgba(74,20,29,.8);
-    animation:rise .9s .82s both;
-  }
-  .enter::before{ content:""; position:absolute; inset:0; z-index:-1;
-    background:var(--ink); transform:scaleX(0); transform-origin:left;
-    transition:transform .45s cubic-bezier(.7,0,.2,1); }
-  .enter:hover{ transform:translateY(-2px); border-color:var(--ink);
-    box-shadow:0 20px 34px -18px rgba(43,26,24,.85); }
+    transition:color .45s ease,border-color .45s ease,transform .25s ease,box-shadow .45s ease;
+    box-shadow:0 14px 26px -16px rgba(74,20,29,.8); animation:rise .9s .82s both; }
+  .enter::before{ content:""; position:absolute; inset:0; z-index:-1; background:var(--ink);
+    transform:scaleX(0); transform-origin:left; transition:transform .45s cubic-bezier(.7,0,.2,1); }
+  .enter:hover{ transform:translateY(-2px); border-color:var(--ink); box-shadow:0 20px 34px -18px rgba(43,26,24,.85); }
   .enter:hover::before{ transform:scaleX(1); }
   .enter .arrow{ transition:transform .35s ease; }
   .enter:hover .arrow{ transform:translateX(5px); }
   .enter:focus-visible{ outline:2px solid var(--brass); outline-offset:4px; }
+  .foot{ margin-top:clamp(20px,3vw,32px); font-family:var(--sans); font-weight:500;
+    font-size:clamp(9.5px,1.3vw,11px); letter-spacing:.34em; text-transform:uppercase;
+    color:var(--brass); opacity:.9; animation:rise .9s .96s both; }
 
-  .foot{
-    margin-top:clamp(20px,3vw,32px);
-    font-family:var(--sans); font-weight:500;
-    font-size:clamp(9.5px,1.3vw,11px);
-    letter-spacing:.34em; text-transform:uppercase;
-    color:var(--brass); opacity:.9;
-    animation:rise .9s .96s both;
-  }
+  /* ============ SCREEN 2 — FERMENTATION DASHBOARD ============ */
+  #dashboard{ background:
+      radial-gradient(80% 60% at 50% 8%, var(--wine-bright), transparent 60%),
+      linear-gradient(180deg, var(--wine) 0%, var(--wine-deep) 100%); color:var(--cream); }
+  .bubbles{ position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:1; }
+  .bubble{ position:absolute; bottom:-8%; border-radius:50%;
+    background:radial-gradient(circle at 32% 28%, rgba(255,247,236,.95),
+      rgba(202,164,107,.40) 42%, rgba(255,247,236,0) 72%);
+    box-shadow:0 0 8px rgba(255,240,220,.18);
+    animation-name:bubbleRise; animation-timing-function:ease-in; animation-iteration-count:infinite; }
+  @keyframes bubbleRise{
+    0%{ transform:translate(0,0) scale(.5); opacity:0; }
+    8%{ opacity:var(--op); }
+    50%{ transform:translate(calc(var(--drift)*.5), -52svh) scale(1); }
+    88%{ opacity:var(--op); }
+    100%{ transform:translate(var(--drift), -108svh) scale(1.05); opacity:0; } }
 
-  @keyframes rise{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:none; } }
-  @keyframes float{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-6px); } }
+  .panel{ position:relative; z-index:2; width:min(960px,100%); text-align:center; }
+  .topbar{ display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:clamp(20px,4vw,40px); }
+  .back{ display:inline-flex; align-items:center; gap:.55em; cursor:pointer;
+    font-family:var(--sans); font-weight:600; font-size:clamp(10px,1.4vw,12px);
+    letter-spacing:.18em; text-transform:uppercase; color:var(--cream);
+    text-decoration:none; padding:9px 16px; border:1px solid rgba(202,164,107,.55);
+    background:rgba(255,247,236,.04); transition:background .3s,transform .25s,border-color .3s; }
+  .back:hover{ background:rgba(255,247,236,.12); border-color:var(--brass-2); transform:translateX(-3px); }
+  .live{ font-family:var(--sans); font-weight:600; font-size:clamp(9.5px,1.3vw,11px);
+    letter-spacing:.28em; text-transform:uppercase; color:var(--brass-2);
+    display:inline-flex; align-items:center; gap:.6em; }
+  .live .dot{ width:8px; height:8px; border-radius:50%; background:var(--brass-2);
+    box-shadow:0 0 0 0 rgba(202,164,107,.6); animation:pulse 2.2s ease-out infinite; }
+  @keyframes pulse{ 0%{ box-shadow:0 0 0 0 rgba(202,164,107,.55);} 70%{ box-shadow:0 0 0 11px rgba(202,164,107,0);} 100%{ box-shadow:0 0 0 0 rgba(202,164,107,0);} }
 
+  .dash-kicker{ font-family:var(--sans); font-weight:600; font-size:clamp(10px,1.5vw,12px);
+    letter-spacing:.4em; text-transform:uppercase; color:var(--brass-2); margin-bottom:.7em; }
+  #dashboard h2{ font-weight:300; font-style:italic; color:var(--cream);
+    font-size:clamp(32px,6vw,58px); line-height:1.04; letter-spacing:-.01em; }
+  .dash-sub{ font-family:var(--sans); font-weight:400; font-size:clamp(12px,1.7vw,15px);
+    color:rgba(245,239,226,.72); margin:clamp(12px,2vw,18px) auto clamp(26px,4vw,40px); max-width:46ch; }
+
+  .cards{ display:grid; grid-template-columns:repeat(4,1fr); gap:clamp(10px,1.5vw,18px); }
+  @media (max-width:640px){ .cards{ grid-template-columns:repeat(2,1fr); } }
+  .card{ background:linear-gradient(160deg, rgba(255,247,236,.10), rgba(255,247,236,.03));
+    border:1px solid rgba(202,164,107,.30); backdrop-filter:blur(3px);
+    padding:clamp(16px,2.4vw,24px) clamp(12px,1.8vw,18px); text-align:left; }
+  .card .lab{ font-family:var(--sans); font-weight:600; font-size:clamp(9px,1.2vw,10.5px);
+    letter-spacing:.22em; text-transform:uppercase; color:var(--brass-2); }
+  .card .val{ font-weight:300; font-size:clamp(26px,3.6vw,40px); color:var(--cream); margin-top:.18em; line-height:1; }
+  .card .val small{ font-size:.42em; font-family:var(--sans); letter-spacing:.04em; color:rgba(245,239,226,.6); }
+
+  @keyframes rise{ from{ opacity:0; transform:translateY(14px);} to{ opacity:1; transform:none;} }
+  @keyframes float{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-6px);} }
   @media (prefers-reduced-motion:reduce){
-    *{ animation:none !important; transition:none !important; }
-  }
-  /* tighten for very short embed regions */
-  @media (max-height:430px){
-    .seal{ display:none; } .foot{ display:none; }
-    .stage{ padding:clamp(20px,4vw,40px); }
-  }
+    *{ animation:none !important; transition:opacity .2s !important; }
+    .bubble{ display:none; } }
+  @media (max-height:430px){ .seal,.foot{ display:none; } .stage{ padding:clamp(20px,4vw,40px);} }
 </style>
 </head>
 <body>
-  <main class="stage" role="main">
-    <span class="cnr tl"></span><span class="cnr tr"></span>
-    <span class="cnr bl"></span><span class="cnr br"></span>
 
-    <!-- ===== wax-seal emblem (decorative) ===== -->
-    <svg class="seal" viewBox="0 0 120 120" aria-hidden="true" fill="none">
-      <circle cx="60" cy="60" r="55" stroke="currentColor" stroke-width="1"/>
-      <circle cx="60" cy="60" r="48.5" stroke="currentColor" stroke-width="1.6"/>
-      <defs>
-        <path id="arcTop" d="M 60 60 m -39 0 a 39 39 0 1 1 78 0" />
-        <path id="arcBot" d="M 60 60 m -39 0 a 39 39 0 0 0 78 0" />
-      </defs>
-      <text font-size="9"><textPath href="#arcTop" startOffset="50%" text-anchor="middle">ESTATE · ANALYTICS</textPath></text>
-      <text font-size="8"><textPath href="#arcBot" startOffset="50%" text-anchor="middle">· EST · 2024 ·</textPath></text>
-      <!-- wine glass + vine -->
-      <path d="M48 44 h24 a12 12 0 0 1 -12 13 a12 12 0 0 1 -12 -13 Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-      <path d="M60 57 v14 M52 73 h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-      <path d="M60 44 q-7 -7 -2 -13 q6 4 2 13" fill="currentColor" opacity=".85"/>
-    </svg>
+  <!-- ============ SCREEN 1 ============ -->
+  <section class="screen" id="welcome">
+    <main class="stage" role="main">
+      <span class="cnr tl"></span><span class="cnr tr"></span>
+      <span class="cnr bl"></span><span class="cnr br"></span>
+      <svg class="seal" viewBox="0 0 120 120" aria-hidden="true" fill="none">
+        <circle cx="60" cy="60" r="55" stroke="currentColor" stroke-width="1"/>
+        <circle cx="60" cy="60" r="48.5" stroke="currentColor" stroke-width="1.6"/>
+        <defs>
+          <path id="arcTop" d="M 60 60 m -39 0 a 39 39 0 1 1 78 0" />
+          <path id="arcBot" d="M 60 60 m -39 0 a 39 39 0 0 0 78 0" />
+        </defs>
+        <text font-size="9"><textPath href="#arcTop" startOffset="50%" text-anchor="middle">ESTATE · ANALYTICS</textPath></text>
+        <text font-size="8"><textPath href="#arcBot" startOffset="50%" text-anchor="middle">· EST · 2024 ·</textPath></text>
+        <path d="M48 44 h24 a12 12 0 0 1 -12 13 a12 12 0 0 1 -12 -13 Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        <path d="M60 57 v14 M52 73 h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M60 44 q-7 -7 -2 -13 q6 4 2 13" fill="currentColor" opacity=".85"/>
+      </svg>
 
-    <!-- ===== EDIT TEXT BELOW ===== -->
-    <p class="kicker">Estate Analytics</p>
+      <!-- ===== EDIT WELCOME TEXT ===== -->
+      <p class="kicker">Estate Analytics</p>
+      <h1><span class="l1">Welcome to the</span><span class="l2">Vintage Report</span></h1>
+      <div class="rule" aria-hidden="true"><i></i><b></b><i></i></div>
+      <p class="sub">From vine to bottle to sale — your <em>harvest, production, and
+        DTC performance</em>, decanted into a single living view.</p>
+      <a class="enter" id="enterBtn" href="#dashboard" aria-label="Enter the dashboard">
+        Enter the dashboard <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <p class="foot">Vintage 2024 · Cellar to Screen</p>
+      <!-- ===== END WELCOME TEXT ===== -->
+    </main>
+  </section>
 
-    <h1>
-      <span class="l1">Welcome to the</span>
-      <span class="l2">Vintage Report</span>
-    </h1>
+  <!-- ============ SCREEN 2 — FERMENTATION DASHBOARD ============ -->
+  <section class="screen" id="dashboard" aria-hidden="true">
+    <div class="bubbles" id="bubbles" aria-hidden="true"></div>
+    <div class="panel">
+      <div class="topbar">
+        <a class="back" id="backBtn" href="#" role="button">← Back</a>
+        <span class="live"><span class="dot"></span>Fermenting</span>
+      </div>
+      <!-- ===== EDIT DASHBOARD TEXT / KPIs ===== -->
+      <p class="dash-kicker">The Cellar Floor</p>
+      <h2>Fermentation, live</h2>
+      <p class="dash-sub">Live tank readings bubbling up from the cellar. Drop your
+        Tableau views in below — these cards are placeholders you can replace.</p>
+      <div class="cards">
+        <div class="card"><div class="lab">Active Tanks</div><div class="val">12</div></div>
+        <div class="card"><div class="lab">Avg Brix</div><div class="val">22.4<small>°Bx</small></div></div>
+        <div class="card"><div class="lab">Temp</div><div class="val">24<small>°C</small></div></div>
+        <div class="card"><div class="lab">Cases YTD</div><div class="val">8.4<small>K</small></div></div>
+      </div>
+      <!-- ===== END DASHBOARD TEXT ===== -->
+    </div>
+  </section>
 
-    <div class="rule" aria-hidden="true"><i></i><b></b><i></i></div>
+<script>
+  // ---- screen routing (hash-based, so browser back works + deep links) ----
+  function sync(){ document.body.classList.toggle('dash', location.hash === '#dashboard');
+    document.getElementById('dashboard').setAttribute('aria-hidden', location.hash === '#dashboard' ? 'false':'true'); }
+  document.getElementById('enterBtn').addEventListener('click', e=>{ e.preventDefault(); location.hash='dashboard'; });
+  document.getElementById('backBtn').addEventListener('click', e=>{ e.preventDefault();
+    if (history.length>1 && location.hash==='#dashboard') history.back(); else location.hash=''; });
+  window.addEventListener('hashchange', sync);
 
-    <p class="sub">
-      From vine to bottle to sale — your <em>harvest, production, and
-      DTC performance</em>, decanted into a single living view.
-    </p>
+  // ---- 32 fermentation bubbles ----
+  (function(){
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const layer = document.getElementById('bubbles'), N = 32, rnd=(a,b)=>a+Math.random()*(b-a);
+    for (let i=0;i<N;i++){
+      const b=document.createElement('span'); b.className='bubble';
+      const size=rnd(6,26), dur=rnd(6,15);
+      b.style.cssText=`width:${size}px;height:${size}px;left:${rnd(2,96)}%;`+
+        `--op:${rnd(.35,.8).toFixed(2)};--drift:${rnd(-40,40).toFixed(0)}px;`+
+        `animation-duration:${dur.toFixed(1)}s;animation-delay:${(-rnd(0,dur)).toFixed(1)}s;`;
+      layer.appendChild(b);
+    }
+  })();
 
-    <!-- Set href to your dashboard / next page URL (or leave "#"). -->
-    <a class="enter" href="#" aria-label="Enter the dashboard">
-      Enter the dashboard
-      <span class="arrow" aria-hidden="true">→</span>
-    </a>
-
-    <p class="foot">Vintage 2024 · Cellar to Screen</p>
-    <!-- ===== END EDIT TEXT ===== -->
-  </main>
+  sync();
+</script>
 </body>
 </html>
