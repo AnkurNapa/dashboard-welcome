@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Estate Analytics — Welcome</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%236b1f2a'/%3E%3Ctext x='8' y='12' font-family='Georgia' font-size='11' fill='%23f5efe2' text-anchor='middle'%3EE%3C/text%3E%3C/svg%3E" />
+
+<!-- ============================================================= -->
+<!--  EDIT YOUR TEXT + LINK in the marked spots inside <body>.     -->
+<!--  Host: push this file to a GitHub repo, enable Pages, then    -->
+<!--  point a Tableau "Web Page" object at the Pages URL.          -->
+<!-- ============================================================= -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    --wine:#6b1f2a;
+    --wine-deep:#4a141d;
+    --cream:#f5efe2;
+    --cream-2:#efe6d3;
+    --ink:#2b1a18;
+    --brass:#b08d57;
+    --brass-2:#caa46b;
+    --serif:"Fraunces", "Hoefler Text", Georgia, "Times New Roman", serif;
+    --sans:"Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ height:100%; }
+
+  body{
+    font-family:var(--serif);
+    color:var(--ink);
+    background:var(--cream);
+    min-height:100svh;
+    display:flex;
+    align-items:safe center;
+    justify-content:center;
+    padding:clamp(16px,3.5vw,48px);
+    overflow:auto;
+    position:relative;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+
+  /* atmospheric burgundy glows + warm vignette for depth */
+  body::before{
+    content:"";
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(60% 55% at 85% -10%, rgba(107,31,42,.20), transparent 60%),
+      radial-gradient(55% 50% at -10% 110%, rgba(107,31,42,.16), transparent 60%),
+      radial-gradient(120% 120% at 50% 40%, transparent 55%, rgba(74,20,29,.10));
+  }
+  /* fine paper grain */
+  body::after{
+    content:"";
+    position:fixed; inset:0; z-index:1; pointer-events:none;
+    opacity:.06; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* the framed card */
+  .stage{
+    position:relative; z-index:2;
+    width:min(700px,100%);
+    padding:clamp(26px,4.2vw,52px) clamp(22px,4.5vw,58px);
+    text-align:center;
+    border:1px solid rgba(176,141,87,.55);
+    outline:1px solid rgba(176,141,87,.28);
+    outline-offset:7px;
+    background:
+      linear-gradient(180deg, rgba(255,252,245,.55), rgba(239,230,211,.30));
+    box-shadow:0 30px 70px -40px rgba(74,20,29,.55);
+  }
+  /* corner diamonds on the frame */
+  .stage span.cnr{ position:absolute; width:7px; height:7px; background:var(--brass);
+    transform:rotate(45deg); }
+  .cnr.tl{ top:-4px; left:-4px;} .cnr.tr{ top:-4px; right:-4px;}
+  .cnr.bl{ bottom:-4px; left:-4px;} .cnr.br{ bottom:-4px; right:-4px;}
+
+  /* wax-seal emblem */
+  .seal{ width:clamp(58px,8vw,76px); height:auto; display:block; margin:0 auto clamp(13px,2.2vw,18px);
+    color:var(--brass); animation:rise .9s .05s both, float 7s ease-in-out 1.2s infinite; }
+  .seal text{ font-family:var(--sans); font-weight:600; letter-spacing:2.4px; fill:var(--brass); }
+
+  .kicker{
+    font-family:var(--sans); font-weight:600;
+    font-size:clamp(11px,1.5vw,13px);
+    letter-spacing:.42em; text-transform:uppercase;
+    color:var(--wine);
+    margin-bottom:clamp(12px,2vw,18px);
+    padding-left:.42em;
+    animation:rise .9s .15s both;
+  }
+
+  h1{
+    font-weight:300; line-height:1.02;
+    color:var(--wine);
+    font-size:clamp(34px,6.6vw,62px);
+    font-optical-sizing:auto;
+    letter-spacing:-.01em;
+  }
+  h1 .l1{ display:block; font-size:.44em; font-weight:400; color:var(--ink);
+    letter-spacing:.02em; margin-bottom:.12em; animation:rise .9s .28s both; }
+  h1 .l2{ display:block; font-style:italic; font-weight:300; animation:rise 1s .4s both; }
+
+  .rule{ display:flex; align-items:center; justify-content:center; gap:14px;
+    margin:clamp(16px,2.6vw,24px) auto clamp(14px,2.2vw,20px); max-width:320px;
+    animation:rise .9s .55s both; }
+  .rule i{ height:1px; flex:1; background:linear-gradient(90deg,transparent,var(--brass)); }
+  .rule i:last-child{ background:linear-gradient(90deg,var(--brass),transparent); }
+  .rule b{ width:6px; height:6px; background:var(--brass); transform:rotate(45deg); }
+
+  .sub{
+    font-size:clamp(14px,2vw,19px);
+    line-height:1.5; font-weight:300; color:var(--ink);
+    max-width:30ch; margin:0 auto clamp(22px,3.4vw,34px);
+    animation:rise .9s .68s both;
+  }
+  .sub em{ font-style:italic; color:var(--wine-deep); }
+
+  .enter{
+    --pad:clamp(13px,1.8vw,17px) clamp(26px,3.4vw,40px);
+    position:relative; display:inline-flex; align-items:center; gap:.7em;
+    font-family:var(--sans); font-weight:600;
+    font-size:clamp(12px,1.6vw,14px);
+    letter-spacing:.2em; text-transform:uppercase; text-decoration:none;
+    color:var(--cream); padding:var(--pad);
+    background:var(--wine); border:1px solid var(--wine);
+    overflow:hidden; isolation:isolate;
+    transition:color .45s ease, border-color .45s ease, transform .25s ease,
+               box-shadow .45s ease;
+    box-shadow:0 14px 26px -16px rgba(74,20,29,.8);
+    animation:rise .9s .82s both;
+  }
+  .enter::before{ content:""; position:absolute; inset:0; z-index:-1;
+    background:var(--ink); transform:scaleX(0); transform-origin:left;
+    transition:transform .45s cubic-bezier(.7,0,.2,1); }
+  .enter:hover{ transform:translateY(-2px); border-color:var(--ink);
+    box-shadow:0 20px 34px -18px rgba(43,26,24,.85); }
+  .enter:hover::before{ transform:scaleX(1); }
+  .enter .arrow{ transition:transform .35s ease; }
+  .enter:hover .arrow{ transform:translateX(5px); }
+  .enter:focus-visible{ outline:2px solid var(--brass); outline-offset:4px; }
+
+  .foot{
+    margin-top:clamp(20px,3vw,32px);
+    font-family:var(--sans); font-weight:500;
+    font-size:clamp(9.5px,1.3vw,11px);
+    letter-spacing:.34em; text-transform:uppercase;
+    color:var(--brass); opacity:.9;
+    animation:rise .9s .96s both;
+  }
+
+  @keyframes rise{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:none; } }
+  @keyframes float{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-6px); } }
+
+  @media (prefers-reduced-motion:reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+  /* tighten for very short embed regions */
+  @media (max-height:430px){
+    .seal{ display:none; } .foot{ display:none; }
+    .stage{ padding:clamp(20px,4vw,40px); }
+  }
+</style>
+</head>
+<body>
+  <main class="stage" role="main">
+    <span class="cnr tl"></span><span class="cnr tr"></span>
+    <span class="cnr bl"></span><span class="cnr br"></span>
+
+    <!-- ===== wax-seal emblem (decorative) ===== -->
+    <svg class="seal" viewBox="0 0 120 120" aria-hidden="true" fill="none">
+      <circle cx="60" cy="60" r="55" stroke="currentColor" stroke-width="1"/>
+      <circle cx="60" cy="60" r="48.5" stroke="currentColor" stroke-width="1.6"/>
+      <defs>
+        <path id="arcTop" d="M 60 60 m -39 0 a 39 39 0 1 1 78 0" />
+        <path id="arcBot" d="M 60 60 m -39 0 a 39 39 0 0 0 78 0" />
+      </defs>
+      <text font-size="9"><textPath href="#arcTop" startOffset="50%" text-anchor="middle">ESTATE · ANALYTICS</textPath></text>
+      <text font-size="8"><textPath href="#arcBot" startOffset="50%" text-anchor="middle">· EST · 2024 ·</textPath></text>
+      <!-- wine glass + vine -->
+      <path d="M48 44 h24 a12 12 0 0 1 -12 13 a12 12 0 0 1 -12 -13 Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+      <path d="M60 57 v14 M52 73 h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M60 44 q-7 -7 -2 -13 q6 4 2 13" fill="currentColor" opacity=".85"/>
+    </svg>
+
+    <!-- ===== EDIT TEXT BELOW ===== -->
+    <p class="kicker">Estate Analytics</p>
+
+    <h1>
+      <span class="l1">Welcome to the</span>
+      <span class="l2">Vintage Report</span>
+    </h1>
+
+    <div class="rule" aria-hidden="true"><i></i><b></b><i></i></div>
+
+    <p class="sub">
+      From vine to bottle to sale — your <em>harvest, production, and
+      DTC performance</em>, decanted into a single living view.
+    </p>
+
+    <!-- Set href to your dashboard / next page URL (or leave "#"). -->
+    <a class="enter" href="#" aria-label="Enter the dashboard">
+      Enter the dashboard
+      <span class="arrow" aria-hidden="true">→</span>
+    </a>
+
+    <p class="foot">Vintage 2024 · Cellar to Screen</p>
+    <!-- ===== END EDIT TEXT ===== -->
+  </main>
+</body>
+</html>
